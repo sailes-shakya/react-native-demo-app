@@ -30,17 +30,21 @@ const MyComponent: React.FC<MyComponentProps> = ({data}) => {
     setDataSource(data);
   }, [data]);
 
+// Debounce function to limit the rate at which a function can fire.
+
   const debouncedSearch = useCallback(
     debounce((term: string) => {
       setDataSource(data.filter(item => item.name.includes(term)));
     }, 300),
     [data],
   );
-
+// useEffect hook to call the debouncedSearch function whenever the searchTerm changes.
   useEffect(() => {
     debouncedSearch(searchTerm);
   }, [searchTerm, debouncedSearch]);
 
+
+  // Function to handle item selection
   const handleSelect = (item: Item) => {
     setSelectedItems(currentSelectedItems => {
       const newSelectedItems = new Set(currentSelectedItems);
@@ -53,6 +57,8 @@ const MyComponent: React.FC<MyComponentProps> = ({data}) => {
     });
   };
 
+
+  // Function to clear the search input
   const handleClear = () => {
     if (inputRef.current) {
       inputRef.current.clear();
@@ -60,12 +66,14 @@ const MyComponent: React.FC<MyComponentProps> = ({data}) => {
     setSearchTerm("");
   };
 
+
+  // Function to render each item in the FlatList
   const renderItem = ({item}: ListRenderItemInfo<Item>) => (
     <TouchableOpacity
       onPress={() => handleSelect(item)}
       style={styles.itemContainer}>
-		<Text style={styles.itemText}>{item.name}</Text>
-		<Text style={styles.itemText}>
+	<Text style={styles.itemText}>{item.name}</Text>
+      <Text style={styles.itemText}>
 	  {selectedItems.has(item.id) ? 'Selected' : 'Not selected'}
       </Text>
     </TouchableOpacity>
@@ -73,7 +81,7 @@ const MyComponent: React.FC<MyComponentProps> = ({data}) => {
 
   return (
     <View>
-	  <TextInput
+      <TextInput
         ref={inputRef}
         onChangeText={setSearchTerm}
         value={searchTerm}
@@ -104,6 +112,8 @@ function debounce<T extends (...args: any[]) => void>(
     timeout = setTimeout(() => func.apply(this, args), wait);
   } as T;
 }
+
+// Styles
 const styles = StyleSheet.create({
   itemContainer: {
     margin: 10,
